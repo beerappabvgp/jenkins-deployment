@@ -12,19 +12,19 @@ jobs:
       ## Docker login 
 
       - name: Docker Login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       ## Build and push the image to the docker hub
 
       - name: Build and push
-        uses: docker/build-push-actions@v4
-        with:
-          context: .
-          file: ./docker/Dockerfile.backend
-          push: true
-          tags: bharath/todo-app-backend:${{ github.sha }}
+          uses: docker/build-push-actions@v4
+          with:
+            context: .
+            file: ./docker/Dockerfile.backend
+            push: true
+            tags: bharath/todo-app-backend:${{ github.sha }}
 
       ## Steps to deploy this to a VM 
