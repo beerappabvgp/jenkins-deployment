@@ -43,6 +43,7 @@ app.get("/users", async (req, res) => {
             "users": users
         });
     } catch (error: any) {
+        console.log("error is: ", error);
         res.json({
             "message": error.message
         }).status(500);
