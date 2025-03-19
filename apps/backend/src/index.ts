@@ -3,6 +3,7 @@ import {prismaClient} from "db/client";
 const app = express();
 
 app.get("/", (req, res) => {
+    console.log("Entered into the home handler ... ")
     res.send("Hi there!!! 👋👋👋👋");
 });
 
