@@ -50,5 +50,5 @@ app.get("/users", async (req, res) => {
 });
 
 app.listen(5000, () => {
-    console.log(`Server is up and running on port 5000`);
+    console.log(`Server is up and running on port 5000 `);
 });
