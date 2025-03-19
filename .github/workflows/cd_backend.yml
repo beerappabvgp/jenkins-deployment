@@ -28,4 +28,3 @@ jobs:
           tags: bharath/todo-app-backend:${{ github.sha }}
 
       ## Steps to deploy this to a VM 
-
