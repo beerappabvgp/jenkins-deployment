@@ -63,7 +63,7 @@ pipeline {
         stage('Deploy to VM') {
             steps {
                 script {
-                    sshagent(['your-ssh-credential-id']) {
+                    sshagent(['vm-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} << 'EOF'
                                 docker stop ${IMAGE_NAME} || true
