@@ -65,12 +65,11 @@ pipeline {
                 script {
                     sshagent(['vm-ssh-key']) { // Ensure 'vm-ssh-key' exists in Jenkins Credentials
                         sh """
-                            ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} << 'EOF'
-                            docker stop ${IMAGE_NAME} || true
-                            docker rm ${IMAGE_NAME} || true
-                            docker pull bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}
-                            docker run -d --name ${IMAGE_NAME} -p 5000:5000 bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}
-        EOF
+                            ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} \
+                            "docker stop ${IMAGE_NAME} || true && \
+                            docker rm ${IMAGE_NAME} || true && \
+                            docker pull bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA} && \
+                            docker run -d --name ${IMAGE_NAME} -p 5000:5000 bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}"
                         """
                     }
                 }
