@@ -23,6 +23,14 @@ pipeline {
             }
         }
 
+        stage('Check Docker Installation') {
+            steps {
+                script {
+                    sh "docker --version || echo 'Docker is NOT installed!'"
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -52,19 +60,19 @@ pipeline {
         stage('Deploy to VM') {
             steps {
                 script {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} << 'EOF'
-                            docker stop ${IMAGE_NAME} || true
-                            docker rm ${IMAGE_NAME} || true
-                            
-                            docker pull your-dockerhub-username/${IMAGE_NAME}:${env.COMMIT_SHA}
-                            
-                            docker run -d --name ${IMAGE_NAME} \
-                            -p 5000:5000 your-dockerhub-username/${IMAGE_NAME}:${env.COMMIT_SHA}
-                        EOF
-                    """
+                    sshagent(['your-ssh-credential-id']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} << 'EOF'
+                                docker stop ${IMAGE_NAME} || true
+                                docker rm ${IMAGE_NAME} || true
+                                docker pull your-dockerhub-username/${IMAGE_NAME}:${env.COMMIT_SHA}
+                                docker run -d --name ${IMAGE_NAME} -p 5000:5000 your-dockerhub-username/${IMAGE_NAME}:${env.COMMIT_SHA}
+                            EOF
+                        """
+                    }
                 }
             }
         }
+
     }
 }
