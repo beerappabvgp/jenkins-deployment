@@ -36,7 +36,7 @@ pipeline {
                 script {
                     sh """
                         docker build -t ${IMAGE_NAME}:${env.COMMIT_SHA} \
-                        -f docker/Dockerfile.backend docker/
+                        -f docker/Dockerfile.backend .
                     """
                 }
             }
