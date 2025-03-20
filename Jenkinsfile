@@ -42,17 +42,23 @@ pipeline {
             }
         }
 
-       stage('Push to Docker Hub') {
+        stage('Push to Docker Hub') {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                        def dockerImage = docker.image("bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}")
-                        dockerImage.push()
+                        def localImageName = "${IMAGE_NAME}:${env.COMMIT_SHA}"
+                        def remoteImageName = "bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}"
+                        
+                        // Tag the image correctly before pushing
+                        sh "docker tag ${localImageName} ${remoteImageName}"
+                        
+                        // Push the correctly tagged image
+                        def app = docker.image(remoteImageName)
+                        app.push()
                     }
                 }
             }
         }
-
 
         stage('Deploy to VM') {
             steps {
