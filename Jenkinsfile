@@ -63,19 +63,21 @@ pipeline {
         stage('Deploy to VM') {
             steps {
                 script {
-                    sshagent(['vm-ssh-key']) {
+                    sshagent(['vm-ssh-key']) { // Make sure this matches the ID in Jenkins Credentials
                         sh """
-                            ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} << 'EOF'
-                                docker stop ${IMAGE_NAME} || true
-                                docker rm ${IMAGE_NAME} || true
-                                docker pull bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}
-                                docker run -d --name ${IMAGE_NAME} -p 5000:5000 bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}
+                            ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} << EOF
+                            docker stop ${IMAGE_NAME} || true
+                            docker rm ${IMAGE_NAME} || true
+                            docker pull bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}
+                            docker run -d --name ${IMAGE_NAME} -p 5000:5000 bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}
                             EOF
                         """
                     }
                 }
             }
         }
+
+
 
     }
 } 
