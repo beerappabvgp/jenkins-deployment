@@ -42,16 +42,17 @@ pipeline {
             }
         }
 
-        stage('Push to Docker Hub') {
+       stage('Push to Docker Hub') {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                        def app = docker.image("${IMAGE_NAME}:${env.COMMIT_SHA}")
-                        app.push()
+                        def dockerImage = docker.image("bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}")
+                        dockerImage.push()
                     }
                 }
             }
         }
+
 
         stage('Deploy to VM') {
             steps {
