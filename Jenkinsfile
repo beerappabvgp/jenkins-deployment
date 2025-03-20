@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                        def app = docker.image("bharathbeerappa/backend-server:${env.COMMIT_SHA}")
+                        def app = docker.image("${IMAGE_NAME}:${env.COMMIT_SHA}")
                         app.push()
                     }
                 }
