@@ -45,17 +45,14 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                        sh """
-                            docker tag ${IMAGE_NAME}:${env.COMMIT_SHA} \
-                            your-dockerhub-username/${IMAGE_NAME}:${env.COMMIT_SHA}
-                            
-                            docker push your-dockerhub-username/${IMAGE_NAME}:${env.COMMIT_SHA}
-                        """
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                        def app = docker.image("your-dockerhub-username/backend-server:${env.GIT_COMMIT}")
+                        app.push()
                     }
                 }
             }
         }
+
 
         stage('Deploy to VM') {
             steps {
