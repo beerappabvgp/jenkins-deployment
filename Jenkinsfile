@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                        def app = docker.image("your-dockerhub-username/backend-server:${env.GIT_COMMIT}")
+                        def app = docker.image("bharathbeerappa/backend-server:${env.GIT_COMMIT}")
                         app.push()
                     }
                 }
@@ -62,8 +62,8 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} << 'EOF'
                                 docker stop ${IMAGE_NAME} || true
                                 docker rm ${IMAGE_NAME} || true
-                                docker pull your-dockerhub-username/${IMAGE_NAME}:${env.COMMIT_SHA}
-                                docker run -d --name ${IMAGE_NAME} -p 5000:5000 your-dockerhub-username/${IMAGE_NAME}:${env.COMMIT_SHA}
+                                docker pull bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}
+                                docker run -d --name ${IMAGE_NAME} -p 5000:5000 bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}
                             EOF
                         """
                     }
