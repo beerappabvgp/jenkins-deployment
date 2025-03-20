@@ -23,6 +23,34 @@ pipeline {
             }
         }
 
+        stage('Cleanup Docker on Jenkins Server') {
+            steps {
+                script {
+                    sh """
+                        echo "Cleaning up old Docker containers and images on Jenkins..."
+                        docker container prune -f
+                        docker image prune -a -f
+                    """
+                }
+            }
+        }
+
+        stage('Cleanup Docker on Backend Server VM') {
+            steps {
+                script {
+                    sshagent(['vm-ssh-key']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} "
+                            echo 'Cleaning up old Docker containers and images on Backend Server VM...'
+                            docker container prune -f &&
+                            docker image prune -a -f
+                            "
+                        """
+                    }
+                }
+            }
+        }
+
         stage('Check Docker Installation') {
             steps {
                 script {
@@ -49,10 +77,7 @@ pipeline {
                         def localImageName = "${IMAGE_NAME}:${env.COMMIT_SHA}"
                         def remoteImageName = "bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}"
                         
-                        // Tag the image correctly before pushing
                         sh "docker tag ${localImageName} ${remoteImageName}"
-                        
-                        // Push the correctly tagged image
                         def app = docker.image(remoteImageName)
                         app.push()
                     }
@@ -63,17 +88,18 @@ pipeline {
         stage('Deploy to VM') {
             steps {
                 script {
-                    sshagent(['vm-ssh-key']) { // Ensure 'vm-ssh-key' exists in Jenkins Credentials
+                    sshagent(['vm-ssh-key']) {
                         sh """
-                            ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} \
-                            "docker stop ${IMAGE_NAME} || true && \
-                            docker rm ${IMAGE_NAME} || true && \
-                            docker pull bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA} && \
-                            docker run -d --name ${IMAGE_NAME} -p 5000:5000 bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}"
+                            ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} "
+                            docker stop ${IMAGE_NAME} || true &&
+                            docker rm ${IMAGE_NAME} || true &&
+                            docker pull bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA} &&
+                            docker run -d --name ${IMAGE_NAME} -p 5000:5000 bharathbeerappa/${IMAGE_NAME}:${env.COMMIT_SHA}
+                            "
                         """
                     }
                 }
             }
         }
     }
-} 
+}
