@@ -4,7 +4,7 @@ const app = express();
 
 app.get("/", (req, res) => {
     console.log("Entered into the home handler ..... ")
-    res.send("Hi there!!! 👋👋👋👋 This is for testing jenkins pipeline");
+    res.send("Hi there!!! 👋👋👋👋 This is for testing jenkins pipeline using asg and terraform");
 });
 
 app.use(express.json());
