@@ -17,4 +17,3 @@ spec:
         image: bharathbeerappa/backend-server:latest
         ports:
         - containerPort: 5000
-
