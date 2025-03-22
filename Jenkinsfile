@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        VM_IP = "54.221.175.88"
+        VM_IP = "3.110.131.250"
         VM_USER = "ubuntu"
         IMAGE_NAME = "backend-server"
     }
