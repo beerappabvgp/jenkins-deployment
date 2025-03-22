@@ -1,4 +1,11 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Ignore Terraform cache and provider binaries
+.terraform/
+.terraform.lock.hcl
 
 # Dependencies
 node_modules
@@ -27,7 +34,6 @@ out/
 build
 dist
 
-
 # Debug
 npm-debug.log*
 yarn-debug.log*
@@ -36,4 +42,3 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
-.terraform/
